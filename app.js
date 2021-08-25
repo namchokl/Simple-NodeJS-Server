@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
+import socketInitialize from './controllers/socketController.js';
+
 import authRoutes from './routes/auth.js';
 
 // Env Variables
@@ -12,20 +14,25 @@ const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME;
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
-if( !MONGO_USER || !MONGO_PASSWORD || !MONGO_DB_NAME || !JWT_SECRET_KEY ) {
+if (!MONGO_USER || !MONGO_PASSWORD || !MONGO_DB_NAME || !JWT_SECRET_KEY) {
 	console.log('Please, Provide all Environment Variables!');
 	process.exit();
 }
 
 const app = express();
 
+app.use(express.static('./public'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader(
+		'Access-Control-Allow-Methods',
+		'GET, POST, PUT, PATCH, DELETE'
+	);
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 	next();
 });
 
@@ -49,8 +56,10 @@ mongoose
 		}
 	)
 	.then((result) => {
-		app.listen(PORT, () => {
+		const expressServer = app.listen(PORT, () => {
 			console.log(`Server running on port: ${PORT} ...`);
 		});
+
+		socketInitialize(expressServer);
 	})
 	.catch((err) => console.log(err));
