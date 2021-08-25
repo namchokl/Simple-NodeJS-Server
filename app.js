@@ -1,7 +1,11 @@
+import path from 'path';
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
+
+import {dirnameFromImportMetaUrl} from './util/pathUtil.js';
+const __dirname = dirnameFromImportMetaUrl(import.meta.url);
 
 import socketInitialize from './controllers/socketController.js';
 
@@ -37,6 +41,11 @@ app.use((req, res, next) => {
 });
 
 app.use('/auth', authRoutes);
+
+// catch-all url for react Browser Route in public folder.
+app.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+});
 
 // Common Error Handler
 app.use((error, req, res, next) => {
