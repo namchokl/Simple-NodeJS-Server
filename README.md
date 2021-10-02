@@ -1,11 +1,15 @@
 # Simple-NodeJS-Server
 
-A Simple template of NodeJS server code using JWT authentication.
-It provides two routes for **signup** and **login** : 
-* auth/signup
-* auth/login
+> A template of NodeJS/Express server for simple authentication APIs.
 
-It requires these Env Variables:
+* It provides two API routes for **signup** and **login** : 
+  * POST: /auth/signup
+  * POST: /auth/login
+* Uses MongoDB/Mongoose for user data.
+* Authentication using bcrypt and jsonwebtoken.
+* Request valdation with 'express-validator'.
+
+## It requires these Env Variables:
 * port=?
 * MONGO_USER=?
 * MONGO_PASSWORD=?
